@@ -1,0 +1,51 @@
+-Q theories dlfactris
+# We sometimes want to locally override notation, and there is no good way to do that with scopes.
+-arg -w -arg -notation-overridden
+# Cannot use non-canonical projections as it causes massive unification failures
+# (https://github.com/coq/coq/issues/6294).
+-arg -w -arg -redundant-canonical-projection
+
+theories/prelude/prelude.v
+theories/algebra/multiset.v
+theories/lang/lang.v
+theories/lang/metatheory.v
+theories/lang/notation.v
+theories/base_logic/linpred.v
+theories/base_logic/miniprot.v
+theories/base_logic/aprop.v
+theories/base_logic/uforests.v
+theories/base_logic/cgraph.v
+theories/base_logic/wp_prim.v
+theories/base_logic/wp.v
+theories/base_logic/adequacy.v
+theories/base_logic/proofmode.v
+theories/session_logic/sub.v
+theories/session_logic/sessions.v
+theories/session_logic/imp.v
+theories/session_logic/tele_imp.v
+theories/session_logic/proofmode.v
+theories/examples/assert.v
+theories/examples/tour.v
+theories/examples/prots.v
+theories/examples/llist.v
+theories/examples/basics.v
+theories/examples/compare.v
+theories/examples/sort.v
+theories/examples/sort_br_del.v
+theories/examples/sort_fg.v
+theories/examples/list_rev.v
+theories/logrel/model.v
+theories/logrel/telescopes.v
+theories/logrel/subtyping.v
+theories/logrel/contexts.v
+theories/logrel/term_types.v
+theories/logrel/session_types.v
+theories/logrel/operators.v
+theories/logrel/term_typing_judgment.v
+theories/logrel/subtyping_rules.v
+theories/logrel/term_typing_rules.v
+theories/logrel/session_typing_rules.v
+theories/logrel/examples/pair.v
+theories/logrel/examples/rec_subtyping.v
+theories/logrel/examples/compute_service.v
+
