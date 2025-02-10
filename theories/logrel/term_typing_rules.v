@@ -345,7 +345,7 @@ Section term_typing_rules.
   Proof.
     iIntros "#He" (vs) "!> HΓ1 /=".
     iApply ("He" with "HΓ1"). iIntros (v) "[Hv HΓ2]".
-    wp_alloc l as "Hl". iFrame. iExists l, v; eauto with iFrame.
+    wp_alloc l as "Hl". by iFrame.
   Qed.
 
   Lemma ltyped_free Γ1 Γ2 e A :
@@ -369,8 +369,7 @@ Section term_typing_rules.
     iAssert (ltty_car (copy- A) w)%lty as "#HAm".
     { iIntros "{Hl HΓ}". iApply bi.persistent_absorbingly_affinely_2.
       by iApply coreP_intro. }
-    iFrame "HA". iApply ctx_ltyped_cons_named. iExists _; iSplit; [done|]; iFrame "HΓ".
-    iExists l, w. eauto with iFrame.
+    iFrame "HA". iApply ctx_ltyped_cons_named. eauto with iFrame.
   Qed.
 
   Lemma ltyped_store Γ Γ' (x : string) e A B :
@@ -384,8 +383,7 @@ Section term_typing_rules.
     rewrite {2}HΓx /=.
     iDestruct (ctx_ltyped_cons_named with "HΓ'") as (vl Hvs) "[HA HΓ']"; rewrite Hvs.
     iDestruct "HA" as (l w ->) "[? HA]". wp_store. iSplit; [done|].
-    iApply ctx_ltyped_cons_named. iExists _; iSplit; [done|]; iFrame "HΓ'".
-    iExists l, v. iFrame. iDestruct ("Hcopy" with "HA") as "HA".
+    iApply ctx_ltyped_cons_named. iDestruct ("Hcopy" with "HA") as "HA".
     eauto with iFrame.
   Qed.
 End term_typing_rules.

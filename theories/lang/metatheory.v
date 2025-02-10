@@ -1,7 +1,5 @@
 From dlfactris.lang Require Export lang.
 
-Ltac inv H := inversion H; clear H; simplify_eq.
-
 Lemma pure_step_not_val e1 e2 :
   pure_step e1 e2 → to_val e1 = None.
 Proof. by intros []. Qed.

@@ -120,7 +120,7 @@ Section aProp.
   Lemma excl_outEdges_op_validI `{Sbi PROP} Σ1 Σ2 :
     ✓ (excl_outEdges Σ1 ⋅ excl_outEdges Σ2) ⊢@{PROP} ⌜ Σ1 ##ₘ Σ2 ⌝.
   Proof.
-    iIntros "Hvalid". by iDestruct (bi_cmra_valid_elim with "Hvalid")
+    iIntros "Hvalid". by iDestruct (internal_cmra_valid_elim with "Hvalid")
       as %Hdisj%gmap_op_valid0_disjoint%map_disjoint_fmap.
   Qed.
   Lemma excl_outEdges_uninj `{Sbi PROP} x :
@@ -237,7 +237,7 @@ Section aProp.
     - iIntros "(%x1 & %x2 & #Hx & HP & HQ)".
       iAssert (✓ (x1 ⋅ x2))%I as "Hvalid".
       { iRewrite -"Hx". iPureIntro. apply excl_outEdges_valid. }
-      iDestruct (bi_cmra_valid_elim with "Hvalid")
+      iDestruct (internal_cmra_valid_elim with "Hvalid")
         as %Hdisj%gmap_op_valid0_disjoint.
       iClear "Hvalid". rewrite gmap_op_union //.
       iExists (filter (λ '(l,_), l ∈ dom x1) Σ), (filter (λ '(l,_), l ∉ dom x1) Σ).

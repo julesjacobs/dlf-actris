@@ -6,7 +6,7 @@ This artifact contains Coq source code that proves the results in the paper.
 
 ## Installation
 
-This artifact has been tested with Coq 8.18.0 and OCaml 5.1.0.
+This artifact has been tested with Coq 8.20.0 and OCaml 5.1.0.
 A custom version of Iris is required, see below. The features of this custom version will be upstreamed to Iris in the future.
 
 1. Install `opam`. You can find the instructions on https://opam.ocaml.org/doc/Install.html

@@ -180,7 +180,7 @@ because it would otherwise unfold definitions. For example, when considering
 Lemma do_pure_step_app f x e v e' :
   TCSimpl (subst' x v (subst' f (RecV f x e) e)) e' →
   DoPureStep (App (Val (RecV f x e)) (Val v)) e'.
-Proof. by do 2 constructor. Qed.
+Proof. intros []. by do 2 constructor. Qed.
 Global Hint Extern 1 (DoPureStep (App (Val (RecV _ _ _)) (Val _)) _) =>
   notypeclasses refine (do_pure_step_app _ _ _ _ _ _) : typeclass_instances.
 

@@ -104,7 +104,7 @@ Section uforest.
   Proof.
     intros Hp1 Hp2 i a b. destruct (decide (i < length xs)).
     { rewrite cons_middle assoc.
-      rewrite !(lookup_app_l (_ ++ _)) ?app_length /=; [|lia..]. apply Hp1. }
+      rewrite !(lookup_app_l (_ ++ _)) ?length_app /=; [|lia..]. apply Hp1. }
     rewrite /= !lookup_app_r /=; [|lia..].
     replace (i + 1 - length xs) with (i - length xs + 1) by lia. by apply Hp2.
   Qed.
@@ -213,16 +213,16 @@ Section uforest.
     path g (x :: xs ++ [y]) →
     ∃ xs', path g (x :: xs' ++ [y]) ∧ ¬has_u_turn (x :: xs' ++ [y]).
   Proof.
-    intros Hxy Hp. induction (wf_lt_projected length xs) as [xs _ IH].
+    intros Hxy Hp. induction (Nat.lt_wf_0_projected length xs) as [xs _ IH].
     destruct (decide (has_u_turn ([x] ++ xs ++ [y])))
       as [([|i]&y'&?&?)|]; simplify_eq/=; [..|by eauto].
     { destruct xs as [|x1 [|x2 xs]]; simplify_eq/=.
       apply (IH xs); [lia|]. eapply path_suffix, Hp.
       by do 2 apply suffix_cons_r. }
     assert (i + 2 < length (xs ++ [y])) as Hi by eauto using lookup_lt_Some.
-    rewrite app_length /= in Hi.
+    rewrite length_app /= in Hi.
     apply (IH (take i xs ++ drop (i + 2) xs)).
-    { rewrite app_length take_length drop_length. lia. }
+    { rewrite length_app length_take length_drop. lia. }
     assert (x :: (take i xs ++ drop (i + 2) xs) ++ [y]
       = take (S i) (x :: xs ++ [y]) ++ drop (S (i + 2)) (x :: xs ++ [y])) as ->.
     { f_equal/=. rewrite -assoc drop_app_le; [|lia].
@@ -345,13 +345,14 @@ Section uforest.
     eapply has_u_turn_prefix, (has_u_turn_suffix (drop i1 (take (S i2) xs)));
       [apply prefix_take|apply suffix_drop|].
     eapply (has_u_turn_alt g (drop i1 (take (S i2) xs))); eauto.
-    - rewrite drop_length. rewrite take_length. apply lookup_lt_Some in H2. apply lookup_lt_Some in H1. lia.
+    - rewrite length_drop. rewrite length_take. apply lookup_lt_Some in H2.
+      apply lookup_lt_Some in H1. lia.
     - rewrite lookup_drop. apply lookup_take_Some. split; last lia.
       rewrite<-H1. f_equiv. lia.
     - rewrite<-H2. rewrite last_drop.
       + eapply last_take.
         by apply lookup_lt_Some in H2.
-      + rewrite take_length. apply lookup_lt_Some in H2. apply lookup_lt_Some in H1. lia.
+      + rewrite length_take. apply lookup_lt_Some in H2. apply lookup_lt_Some in H1. lia.
   Qed.
 
   Lemma uforest_connect (g : G) (a b : A) :
@@ -543,7 +544,7 @@ Section uforest.
     destruct (([x] ++ x0 ++ [y]) !! length x0) eqn:E.
     2: {
       apply lookup_ge_None_1 in E. simpl in *.
-      rewrite app_length in E. lia.
+      rewrite length_app in E. lia.
     }
     eapply Hlone.
     apply uforest_undirected0.
@@ -651,16 +652,16 @@ Section uforest.
     - rewrite reverse_cons. rewrite app_comm_cons.
       rewrite lookup_app_l; last first.
       { rewrite app_comm_cons.
-        rewrite app_length. simpl. lia. }
+        rewrite length_app. simpl. lia. }
       rewrite app_comm_cons.
       replace (length (x :: reverse xs)) with (length (x :: reverse xs) + 0) by lia.
       by rewrite lookup_app_add.
     - rewrite app_comm_cons.
       rewrite lookup_app_r; last first.
-      { rewrite reverse_cons. rewrite app_comm_cons. rewrite app_length. simpl.
+      { rewrite reverse_cons. rewrite app_comm_cons. rewrite length_app. simpl.
         lia. }
       simpl.
-      rewrite reverse_cons. rewrite app_length. simpl.
+      rewrite reverse_cons. rewrite length_app. simpl.
       replace (length (reverse xs) + 1 - (length (reverse xs) + 1)) with 0 by lia. done.
   Qed.
 
@@ -884,7 +885,7 @@ Section uforest.
         destruct (i + 1 - length (xs ++ [x])) eqn:F; simplify_eq/=.
         eapply lookup_ge_None in E. lia.
     - assert (i + 1 = length (xs ++ [x])).
-      { eapply lookup_lt_Some in H3. rewrite app_length in H3. simpl in *. lia. }
+      { eapply lookup_lt_Some in H3. rewrite length_app in H3. simpl in *. lia. }
       rewrite H4 in H3.
       replace (length (xs ++ [x])) with (length (xs ++ [x]) + 0) in H3 by lia.
       rewrite lookup_app_add in H3. simplify_eq/=.
@@ -892,14 +893,14 @@ Section uforest.
       rewrite lookup_app in H2.
       destruct (xs !! i) eqn:E.
       { eapply lookup_lt_Some in E.
-        rewrite app_length in H4. simpl in *. lia. }
+        rewrite length_app in H4. simpl in *. lia. }
       destruct (i - length xs) eqn:F.
       + simpl in *. simplify_eq. done.
       + simpl in *. destruct ((i - length (xs ++ [x]))) eqn:G;
         simplify_eq/=.
-        rewrite app_length in G. simpl in *.
-        rewrite app_length in n.
-        rewrite app_length in H4.
+        rewrite length_app in G. simpl in *.
+        rewrite length_app in n.
+        rewrite length_app in H4.
         simpl in *. lia.
   Qed.
 
@@ -921,7 +922,7 @@ Section uforest.
       constructor. intros. eapply IHn.
       exists (xs ++ [x]). split.
       + eapply Rpath_snoc; eauto.
-      + simpl. rewrite app_length; simpl. lia.
+      + simpl. rewrite length_app; simpl. lia.
   Qed.
 
   Lemma ureachable_0 R g a :
@@ -938,9 +939,9 @@ Section uforest.
   Lemma rel_wf R g :
     asym R →
     Rvalid R g →
-    is_uforest g → wf R.
+    is_uforest g → well_founded R.
   Proof.
-    intros. unfold wf. intro.
+    intros. unfold well_founded. intro.
     eapply rel_wf_helper; eauto using ureachable_0.
   Qed.
 

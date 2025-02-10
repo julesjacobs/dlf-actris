@@ -9,13 +9,6 @@ Notation "x ≡≡ y" := (<affine> (x ≡ y))%I (at level 70) : bi_scope.
 Reserved Notation "c ↣ p" (at level 20, format "c  ↣  p").
 
 (** UPSTREAM to std++ *)
-Class TCSimpl {A} (x x' : A) := tc_simpl : x = x'.
-Global Hint Extern 0 (TCSimpl _ _) =>
-  simpl; notypeclasses refine (eq_refl _) : typeclass_instances.
-
-Lemma wf_lt_projected {B} (f : B → nat) : wf (λ x y, f x < f y).
-Proof. by apply (wf_projected (<) f), lt_wf. Qed.
-
 Definition prod_swap {A B} : A * B → B * A := λ '(x,y), (y,x).
 
 Lemma elem_of_set_map_prod_swap `{Countable A} (e : gset (A * A)) (x y : A) :
@@ -65,7 +58,7 @@ Lemma split_last {A} (xs : list A) a :
 Proof.
   intros Hlst. rewrite -{1}(take_drop (length xs - 1) xs). f_equal.
   apply last_Some in Hlst as [xs' ->].
-  rewrite app_length /=. replace (length xs' + 1 - 1) with (length xs') by lia.
+  rewrite length_app /=. replace (length xs' + 1 - 1) with (length xs') by lia.
   by rewrite drop_app_length.
 Qed.
 
@@ -74,14 +67,14 @@ Lemma split_both {A} (xs : list A) a :
   xs = a :: drop 1 (take (length xs - 1) xs) ++ [a].
 Proof.
   intros Hlen Hfst%split_first Hlst%split_last; simplify_eq/=.
-  rewrite -drop_app_le ?take_length; last lia.
+  rewrite -drop_app_le ?length_take; last lia.
   by rewrite -Hlst.
 Qed.
 
 Lemma last_take {A} i (xs : list A) :
   i < length xs → last (take (S i) xs) = xs !! i.
 Proof.
-  intros. rewrite last_lookup lookup_take ?take_length; last lia.
+  intros. rewrite last_lookup lookup_take ?length_take; last lia.
   f_equal; lia.
 Qed.
 
@@ -91,7 +84,7 @@ Proof. intros. rewrite last_take; eauto using lookup_lt_Some. Qed.
 
 Lemma last_drop {A} (xs : list A) i :
   i < length xs → last (drop i xs) = last xs.
-Proof. intros. rewrite !last_lookup lookup_drop drop_length. f_equal; lia. Qed.
+Proof. intros. rewrite !last_lookup lookup_drop length_drop. f_equal; lia. Qed.
 
 Lemma lookup_update {A} i j (xs : list A) x :
   <[i:=x]> xs !! j = if decide (i = j ∧ j < length xs) then Some x else xs !! j.
@@ -136,29 +129,3 @@ Section quotient.
   Lemma quotient_equiv (x1 x2 : Ofe A quotient_ofe_mixin) : x1 ≡ x2 ⊣⊢ R x1 x2.
   Proof. rewrite /internal_eq. by siProp.unseal. Qed.
 End quotient.
-
-Lemma nil_dist_eq {A : ofe} n (l : list A) : l ≡{n}≡ [] ↔ l = [].
-Proof. split; by inversion 1. Qed.
-Lemma app_dist_eq {A : ofe} n (l k1 k2 : list A) :
-  l ≡{n}≡ k1 ++ k2 ↔ ∃ k1' k2', l = k1' ++ k2' ∧ k1' ≡{n}≡ k1 ∧ k2' ≡{n}≡ k2.
-Proof. rewrite list_dist_Forall2 Forall2_app_inv_r. naive_solver. Qed.
-Lemma list_singleton_dist_eq {A : ofe} n (l : list A) x :
-  l ≡{n}≡ [x] ↔ ∃ x', l = [x'] ∧ x' ≡{n}≡ x.
-Proof.
-  split; [|by intros (?&->&->)].
-  intros (?&?&?&->%Forall2_nil_inv_r&->)%list_dist_Forall2%Forall2_cons_inv_r.
-  eauto.
-Qed.
-
-Lemma dist_Permutation {A : ofe} n (l1 l2 l3 : list A) :
-  l1 ≡{n}≡ l2 → l2 ≡ₚ l3 → ∃ l2', l1 ≡ₚ l2' ∧ l2' ≡{n}≡ l3.
-Proof.
-  intros Hequiv Hperm. revert l1 Hequiv.
-  induction Hperm as [|x l2 l3 _ IH|x y l2|l2 l3 l4 _ IH1 _ IH2]; intros l1.
-  - intros ?. by exists l1.
-  - intros (x'&l2'&?&(l2''&?&?)%IH&->)%list_dist_cons_inv_r.
-    exists (x' :: l2''). by repeat constructor.
-  - intros (y'&?&?&(x'&l2'&?&?&->)%list_dist_cons_inv_r&->)%list_dist_cons_inv_r.
-    exists (x' :: y' :: l2'). by repeat constructor.
-  - intros (l2'&?&(l3'&?&?)%IH2)%IH1. exists l3'. split; [by etrans|done].
-Qed.

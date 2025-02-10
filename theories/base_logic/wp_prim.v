@@ -187,7 +187,7 @@ Proof.
   iDestruct 1 as (g ?) "Hinv". iExists g; iSplit; first done.
   iIntros (ν). iSpecialize ("Hinv" $! ν).
   destruct ν; [destruct (decide _) as [->|]|]; simpl;
-    rewrite ?insert_length // list_lookup_insert_ne //.
+    rewrite ?length_insert // list_lookup_insert_ne //.
 Qed.
 
 Lemma wp_prim_val Φ v : Φ v -∗ wp_prim (Val v) Φ.
@@ -583,7 +583,7 @@ Proof.
   destruct v' as [i'|l']; first case_decide; subst.
   - iSplit.
     + iSplit; last first.
-      { rewrite app_length /=. iPureIntro. simpl in *. lia. }
+      { rewrite length_app /=. iPureIntro. simpl in *. lia. }
       rewrite -!multiset_empty_equiv_eq.
       iApply discrete_eq.
       iRewrite ("Hin2" with "[//]"). by rewrite Hinltid.

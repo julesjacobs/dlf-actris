@@ -37,7 +37,7 @@ Module TImp.
   Definition msg_base_aux : seal msg_base_def. by eexists. Qed.
   Definition msg_base := msg_base_aux.(unseal).
   Definition msg_base_unseal : msg_base = msg_base_def := msg_base_aux.(seal_eq).
-  Arguments msg_base _%val_scope _%I _%prot.
+  Arguments msg_base _%_val_scope _%_I _%_prot.
   Global Instance: Params (@msg_base) 1 := {}.
 
   Program Definition msg_exist_def {A} (m : A → msg) : msg :=
@@ -47,7 +47,7 @@ Module TImp.
   Definition msg_exist := msg_exist_aux.(unseal).
   Definition msg_exist_unseal :
     @msg_exist = @msg_exist_def := msg_exist_aux.(seal_eq).
-  Arguments msg_exist {_} _%msg.
+  Arguments msg_exist {_} _%_msg.
   Global Instance: Params (@msg_exist) 1 := {}.
 
   Program Definition msg_dual_def (m : msg) : msg :=
@@ -60,7 +60,7 @@ Module TImp.
 
   Definition msg_texist {TT : tele} (m : TT → msg) : msg :=
     tele_fold (@msg_exist) (λ x, x) (tele_bind m).
-  Arguments msg_texist {!_} _%msg /.
+  Arguments msg_texist {!_} _%_msg /.
 
   (** * Operators *)
   Definition end_prot_def := Imp.end_prot.

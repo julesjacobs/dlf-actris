@@ -54,7 +54,7 @@ Proof.
   assert (i < length es) by eauto using lookup_lt_Some.
   rewrite (inv_unfold i); eauto.
   rewrite (inv_unfold i); last first.
-  { rewrite /= lookup_app_l ?insert_length //.
+  { rewrite /= lookup_app_l ?length_insert //.
     rewrite list_lookup_insert //. }
   iDestruct "Hinv" as (Σ) "[Hinv Hwp]".
   rewrite wp_prim_unfold.

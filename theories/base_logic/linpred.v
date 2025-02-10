@@ -688,6 +688,6 @@ Section bi_facts.
   Lemma linPred_own_valid x : linPred_own x ⊢ ✓ x.
   Proof.
     apply linPred_entails=> y. rewrite linPred_at_own. iIntros "Hy Heq".
-    iRewrite "Heq" in "Hy". by rewrite /bi_cmra_valid linPred_at_si_pure.
+    iRewrite "Heq" in "Hy". by rewrite /internal_cmra_valid linPred_at_si_pure.
   Qed.
 End bi_facts.

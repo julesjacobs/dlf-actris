@@ -18,7 +18,7 @@ Definition lty_msg_exist {k} (M : lty k → lmsg) : lmsg :=
 
 Definition lty_msg_texist {kt : ktele} (M : ltys kt → lmsg) : lmsg :=
   ktele_fold (@lty_msg_exist) (λ x, x) (ktele_bind M).
-Arguments lty_msg_texist {!_} _%lmsg /.
+Arguments lty_msg_texist {!_} _%_lmsg /.
 
 Definition lty_end (a : action) := Lsty (END@a).
 
@@ -100,9 +100,10 @@ Section session_types.
   Proof. solve_proper. Qed.
   Global Instance lty_choice_proper a : Proper ((≡) ==> (≡)) (@lty_choice a).
   Proof. apply ne_proper, _. Qed.
+
   Global Instance lty_choice_contractive a n :
-    Proper (map_relation (prod_relation (dist n) (dist_later n))
-                         (λ _, False) (λ _, False) ==> dist n)
+    Proper (map_relation (λ _, prod_relation (dist n) (dist_later n))
+                         (λ _ _, False) (λ _ _, False) ==> dist n)
            (@lty_choice a).
   Proof.
     intros Ss Ts Heq. rewrite /lty_choice.

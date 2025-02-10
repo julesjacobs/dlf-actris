@@ -55,7 +55,7 @@ Module Imp.
     iIntros "Hf". wp_rec!. iApply (Ses.wp_fork_chan with "[Hf]").
     { iIntros "!>" (c) "Hc". wp_alloc l as "Hl". iApply "Hf".
       iExists l, c. by iFrame. }
-    iIntros "!>" (c) "Hc". wp_alloc l as "Hl". iExists l, c. by iFrame.
+    iIntros "!>" (c) "Hc". wp_alloc l as "Hl". by iFrame.
   Qed.
 
   Lemma wp_recv {A} c (v : A → val) (P : A → aProp) (p : A → aMiniProt) :
@@ -64,7 +64,7 @@ Module Imp.
   Proof.
     iIntros "(%l & %ch & -> & Hl & Hch)". wp_rec!. wp_load.
     iApply (Ses.wp_recv with "Hch"); iIntros "!>" (ch' x) "[Hch' HP]".
-    wp_store!. iExists x. iSplit; [done|]. iFrame. iExists l, ch'. by iFrame.
+    wp_store!. by iFrame.
   Qed.
 
   Lemma wp_send {A} c (v : A → val) (P : A → aProp) (p : A → aMiniProt) x :
@@ -73,7 +73,7 @@ Module Imp.
   Proof.
     iIntros "(%l & %ch & -> & Hl & Hch) HP". wp_rec!. wp_load.
     iApply (Ses.wp_send with "Hch HP"); iIntros "!>" (ch') "Hch'".
-    wp_store. iSplit; [done|]. iExists l, ch'. by iFrame.
+    wp_store. by iFrame.
   Qed.
 
   Lemma wp_wait c P :
