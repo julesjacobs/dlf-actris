@@ -123,7 +123,7 @@ Section quotient.
       + intros x. apply Rrefl. by siProp.unseal.
       + intros x y Hxy. by apply Rsymm.
       + intros x y z ??. eapply Rtrans. siProp.unseal. by split.
-    - intros n m x y ??. eapply siProp_closed; [done|]. lia.
+    - intros n m x y ??. by eapply siProp_closed.
   Qed.
 
   Lemma quotient_equiv (x1 x2 : Ofe A quotient_ofe_mixin) : x1 ≡ x2 ⊣⊢ R x1 x2.

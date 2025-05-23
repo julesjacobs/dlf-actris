@@ -33,7 +33,7 @@ Section multiset.
       + intros X1 X2 X3 (xs1&?&?) (xs2&?&?).
         destruct (dist_Permutation n xs1 (multiset_car X2) xs2) as (xs&?&?); [done..|].
         exists xs; split; by etrans.
-    - intros n m X1 X2 (xs&?&?) ?. exists xs. split; [done|]. by eapply dist_lt.
+    - intros n m X1 X2 (xs&?&?) ?. exists xs. split; [done|]. by eapply dist_le.
   Qed.
   Canonical Structure multisetO := Ofe (multiset A) multiset_ofe_mixin.
 

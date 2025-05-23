@@ -163,7 +163,7 @@ Proof.
   revert e. induction (lt_wf n) as [n _ IH]=> e Φ Ψ HΦ.
   rewrite !wp_prim_unfold.
   do 24 (f_contractive || f_equiv). apply IH; [done|].
-  intros v. eapply dist_le; [apply HΦ|lia].
+  intros v. eapply dist_lt; [apply HΦ|done].
 Qed.
 Global Instance wp_prim_proper e :
   Proper (pointwise_relation _ (≡) ==> (≡)) (wp_prim e).
