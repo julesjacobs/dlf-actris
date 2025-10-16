@@ -273,9 +273,9 @@ Proof.
     end. by case (vs !! _); simplify_option_eq.
   - destruct (decide _) as [[??]|[<-%dec_stable|[<-%dec_stable ?]]%not_and_l_alt].
     + rewrite !binder_delete_insert // !binder_delete_delete; eauto with f_equal.
-    + by rewrite /= delete_insert_delete delete_idemp.
-    + by rewrite /= binder_delete_insert // delete_insert_delete
-        !binder_delete_delete delete_idemp.
+    + by rewrite /= delete_insert_eq delete_delete_eq.
+    + by rewrite /= binder_delete_insert // delete_insert_eq
+        !binder_delete_delete delete_delete_eq.
   - select (list _) (fun tes => induction tes as [|[]]);
       simplify_eq/=; f_equal; auto with f_equal.
 Qed.
@@ -291,6 +291,6 @@ Lemma subst_map_binder_insert_2 b1 v1 b2 v2 vs e :
 Proof.
   destruct b1 as [|s1], b2 as [|s2]=> /=; auto using subst_map_insert.
   rewrite subst_map_insert. destruct (decide (s1 = s2)) as [->|].
-  - by rewrite delete_idemp subst_subst delete_insert_delete.
+  - by rewrite delete_delete_eq subst_subst delete_insert_eq.
   - by rewrite delete_insert_ne // subst_map_insert subst_subst_ne.
 Qed.

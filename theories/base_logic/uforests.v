@@ -304,7 +304,7 @@ Section uforest.
     split.
     - intros [].
       destruct H0 as [[]|[]]; [left | right]; split;
-      rewrite lookup_take; (done || lia).
+      rewrite lookup_take_lt; (done || lia).
     - intros [[]|[]];
       apply lookup_take_Some in H0 as [];
       apply lookup_take_Some in H1 as []; split; try lia; [left | right]; qed.
@@ -408,7 +408,7 @@ Section uforest.
         }
         assert (take (i2 + 1) (drop (i1 + 1) ([x] ++ xs ++ [x])) !! 0 = Some b) as Hsb.
         {
-          rewrite lookup_take; last lia. rewrite lookup_drop.
+          rewrite lookup_take_lt; last lia. rewrite lookup_drop.
           rewrite Nat.add_0_r. done.
         }
         destruct He as [He|He].
@@ -670,7 +670,7 @@ Section uforest.
   Proof.
     intros Hvert Hvalid Hfpath i a b Ha Hb.
     apply Hvalid.
-    - eapply fpath_uvertices; try done. eapply elem_of_list_lookup_2;done.
+    - eapply fpath_uvertices; try done. eapply list_elem_of_lookup_2;done.
     - unfold fpath in *. eapply Hfpath; done.
   Qed.
 
@@ -799,7 +799,7 @@ Section uforest.
   Proof.
     intros Hforest. intros.
     unfold path in *.
-    apply elem_of_list_lookup in H2 as (? & ?).
+    apply list_elem_of_lookup in H2 as (? & ?).
     destruct x0.
     - destruct (xs !! 1) eqn:E.
       + specialize (H1 _ _ _ H2 E).

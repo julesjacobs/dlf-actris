@@ -55,7 +55,7 @@ Proof.
   rewrite (inv_unfold i); eauto.
   rewrite (inv_unfold i); last first.
   { rewrite /= lookup_app_l ?length_insert //.
-    rewrite list_lookup_insert //. }
+    rewrite list_lookup_insert_eq //. }
   iDestruct "Hinv" as (Σ) "[Hinv Hwp]".
   rewrite wp_prim_unfold.
   erewrite prim_step_not_val; eauto.
@@ -255,7 +255,7 @@ Proof.
   - by left.
   - right. apply (not_Forall_Exists _) in Hforall
       as (e & He & ?%eq_None_not_Some)%Exists_exists; simpl in *.
-    apply elem_of_list_lookup in He as [l Hl].
+    apply list_elem_of_lookup in He as [l Hl].
     exists (Thread l). by rewrite /= Hl.
   - right. apply map_choose in Hσ as (l&o&Hl). exists (Chan l); naive_solver.
 Qed.
@@ -278,7 +278,7 @@ Lemma inv_safety σ :                                                           
   inv σ ⊢ ▷ ⌜ all_progress_or_blocked σ ⌝.
 Proof.
   iIntros "Hinv". rewrite /all_progress_or_blocked Forall_forall.
-  iIntros (e [i Hi]%elem_of_list_lookup).
+  iIntros (e [i Hi]%list_elem_of_lookup).
   iDestruct (inv_unfold with "Hinv") as (Σi) "[Hinv Hwp]"; first done.
   rewrite wp_prim_unfold. destruct (to_val e) eqn:?; simpl; first by eauto.
   iDestruct "Hwp" as (Σi') "[#HΣ Hwp]".

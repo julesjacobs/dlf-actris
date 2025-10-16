@@ -499,14 +499,14 @@ Section instances.
       iApply "HP". iApply ucmra_unit_validI.
     - iIntros (Pi Qi H x) "_ HPi /=". by iApply H.
     - iIntros (P Q H). iApply H. iApply ucmra_unit_validI.
+    - iIntros (Pi) "/="; auto.
+    - iIntros (P x) "/="; auto.
     - iIntros (Pi Qi x) "_ H //".
     - iIntros (A Φi x) "_ H //".
     - iIntros (Pi x) "/="; auto.
     - iIntros (Pi x) "/= _ (%x1 & %x2 & ? & ? & ?) //".
     - iIntros (P) "/="; auto.
     - iIntros (P) "/="; auto.
-    - iIntros (Pi) "/="; auto.
-    - iIntros (P x) "/="; auto.
   Qed.
 
   Lemma linPred_sbi_prop_ext_mixin :

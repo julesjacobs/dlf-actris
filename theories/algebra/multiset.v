@@ -1,6 +1,6 @@
 From iris.algebra Require Import list.
 From iris.bi Require Export sbi.
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.bi Require Import sbi_unfold.
 From dlfactris.prelude Require Export prelude.
 

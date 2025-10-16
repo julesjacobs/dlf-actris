@@ -733,7 +733,7 @@ Proof.
     iDestruct "Hthr" as "[[%Hinltid %Hlen] HΣ]".
     iDestruct ("Hinv" $! (Chan l)) as "Hchan /=".
     iAssert (out_edges g (Thread tid) !! Chan l ≡ Some (inl v))%I as "Hoe".
-    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton //. solve_map_disjoint. }
+    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton_eq //. solve_map_disjoint. }
     iDestruct (out_edges_in_labels with "Hoe") as (X) "HHH".
     iRewrite "HHH" in "Hchan". iClear "HHH Hoe HΣ".
     destruct (h !! l) as [[[]|w]|] eqn:Heq; simpl.
@@ -770,7 +770,7 @@ Proof.
   rewrite aProp_at_affinely aProp_at_internal_eq.
   iDestruct "Hchan" as "[%Houtchan Hinchan]".
   iAssert (out_edges g (Thread tid) !! Chan l ≡ Some (inl v))%I as "Hoe".
-  { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton //. solve_map_disjoint. }
+  { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton_eq //. solve_map_disjoint. }
   iDestruct (out_edges_in_labels with "Hoe") as (X) "HHH".
   iRewrite "Hinchan" in "HHH".
   iClear "Hinchan HΣ Hoe".
@@ -804,7 +804,7 @@ Proof.
     iDestruct "Hthr" as "[[%Hinltid %Hlen] HΣ]".
     iDestruct ("Hinv" $! (Chan l)) as "Hchan /=".
     iAssert (out_edges g (Thread tid) !! Chan l ≡ Some (inl v))%I as "Hoe".
-    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton //. solve_map_disjoint. }
+    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton_eq //. solve_map_disjoint. }
     iDestruct (out_edges_in_labels with "Hoe") as (X) "HHH".
     iRewrite "HHH" in "Hchan". iClear "HHH Hoe HΣ".
     destruct (h !! l) as [[[]|w]|] eqn:Heq; simpl.
@@ -831,7 +831,7 @@ Proof.
     iDestruct "Hthr" as "[[%Hinltid %Hlen] HΣ]".
     iDestruct ("Hinv" $! (Chan l)) as "Hchan /=".
     iAssert (out_edges g (Thread tid) !! Chan l ≡ Some (inl v))%I as "Hoe".
-    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton //. solve_map_disjoint. }
+    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton_eq //. solve_map_disjoint. }
     iDestruct (out_edges_in_labels with "Hoe") as (X) "HHH".
     iRewrite "HHH" in "Hchan".
     destruct (h !! l) as [[[]|w]|] eqn:Heq; simpl.
@@ -866,7 +866,7 @@ Proof.
         iRewrite -"Hinv".
         iRewrite "Hchan1". rewrite !(right_id ∅).
         rewrite -!insert_union_singleton_l.
-        rewrite delete_insert; last by solve_map_disjoint.
+        rewrite delete_insert_id; last by solve_map_disjoint.
         done.
       + iRewrite ("Hout3" with "[]"). { iPureIntro. naive_solver. }
         iRewrite ("Hin2" with "[]"). { iPureIntro. naive_solver. }
@@ -921,7 +921,7 @@ Proof.
     iDestruct "Hthr" as "[[%Hinltid %Hlen] HΣ]".
     iDestruct ("Hinv" $! (Chan l)) as "Hchan /=".
     iAssert (out_edges g (Thread tid) !! Chan l ≡ Some (inl v))%I as "Hoe".
-    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton //. solve_map_disjoint. }
+    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton_eq //. solve_map_disjoint. }
     iDestruct (out_edges_in_labels with "Hoe") as (X) "HHH".
     iRewrite "HHH" in "Hchan". iClear "HHH Hoe HΣ".
     destruct (h !! l) as [[[]|w]|] eqn:Heq; simpl.
@@ -952,7 +952,7 @@ Proof.
   rewrite map_empty_equiv_eq in Houtchan. simpl in *.
   iSplit.
   { iAssert (out_edges g (Thread tid) !! Chan l ≡ Some (inl v))%I as "Hoe".
-    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton //. solve_map_disjoint. }
+    { iRewrite -"HΣ". rewrite lookup_union_l ?lookup_singleton_eq //. solve_map_disjoint. }
     iDestruct (ref_free g (Thread tid) (Chan l) with "[]") as "Hgraph"; try done.
     { iDestruct (out_edges_in_labels with "Hoe") as (X) "HHH".
       iRewrite "Hoe". iSplit; first done.
@@ -977,7 +977,7 @@ Proof.
       iRewrite "Hout1".
       iRewrite -"HΣ".
       rewrite -!insert_union_singleton_l.
-      rewrite delete_insert; last by solve_map_disjoint.
+      rewrite delete_insert_id; last by solve_map_disjoint.
       done.
     + iRewrite ("Hout" with "[]"). { iPureIntro. naive_solver. }
       iRewrite ("Hin" with "[]"). { iPureIntro. naive_solver. }

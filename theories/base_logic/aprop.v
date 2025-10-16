@@ -144,7 +144,7 @@ Section aProp.
       rewrite /excl_outEdges fmap_insert /= -miniprot_map_compose.
       rewrite (miniprot_map_ext _ cid); last apply aProp_unfold_fold.
       by rewrite miniprot_map_id.
-    - iSpecialize ("Hvalid" $! l). rewrite lookup_insert.
+    - iSpecialize ("Hvalid" $! l). rewrite lookup_insert_eq.
       by rewrite option_validI excl_validI.
   Qed.
   Lemma excl_outEdges_injI `{!Sbi PROP} (Σ1 Σ2 : outEdges) :
@@ -304,7 +304,7 @@ Section aProp.
   Proof.
     rewrite own_chan_unseal aProp_at_own. iSplit.
     - iIntros "#H". rewrite gmap_equivI. iPoseProof ("H" $! (Chan l)) as "#Hl".
-      rewrite /excl_outEdges lookup_fmap map_fmap_singleton lookup_singleton /=.
+      rewrite /excl_outEdges lookup_fmap map_fmap_singleton lookup_singleton_eq /=.
       rewrite option_equivI.
       destruct (_ !! Chan l) as [[v|p']|] eqn:?;
         rewrite /= ?excl_equivI ?sum_equivI //.
@@ -315,7 +315,7 @@ Section aProp.
         by destruct (_ !! l'). }
       iSplit.
       + iPureIntro. apply map_eq=> l'. destruct (decide (Chan l = l')) as [<-|].
-        * by rewrite lookup_singleton.
+        * by rewrite lookup_singleton_eq.
         * rewrite lookup_singleton_ne //. auto.
       + iNext. iDestruct (f_equivI (miniprot_map aProp_fold) with "Hl") as "Hl'".
         rewrite -!miniprot_map_compose.
@@ -333,13 +333,13 @@ Section aProp.
     - iIntros "(%Σ1 & %Σ2 & -> & %Hdisj & Hp & HQ)".
       iDestruct (aProp_at_own_chan with "Hp") as (p' ->) "Hp'".
       rewrite map_disjoint_singleton_l in Hdisj.
-      iExists p'. rewrite lookup_union_l // lookup_singleton.
-      rewrite delete_union delete_singleton left_id_L delete_notin //. eauto.
+      iExists p'. rewrite lookup_union_l // lookup_singleton_eq.
+      rewrite delete_union delete_singleton_eq left_id_L delete_id //. eauto.
     - iIntros "(%p' & %Hl & Hp' & HQ)".
       iExists {[ Chan l := inr p' ]}, (delete (Chan l) Σ). iSplit.
       { iPureIntro. by rewrite -insert_empty union_insert_delete // left_id_L. }
       iSplit.
-      { iPureIntro. apply map_disjoint_singleton_l. by rewrite lookup_delete. }
+      { iPureIntro. apply map_disjoint_singleton_l. by rewrite lookup_delete_eq. }
       iSplit; [|done]. iApply aProp_at_own_chan; eauto.
   Qed.
 
@@ -348,7 +348,7 @@ Section aProp.
   Proof.
     rewrite own_ref_unseal aProp_at_own. iSplit.
     - iIntros "#H". rewrite gmap_equivI. iPoseProof ("H" $! (Chan l)) as "#Hl".
-      rewrite /excl_outEdges lookup_fmap map_fmap_singleton lookup_singleton /=.
+      rewrite /excl_outEdges lookup_fmap map_fmap_singleton lookup_singleton_eq /=.
       destruct (_ !! Chan l) as [[v'|p']|] eqn:?;
         rewrite /= ?option_equivI ?excl_equivI ?sum_equivI //.
       iDestruct "Hl" as %->%leibniz_equiv.
@@ -357,7 +357,7 @@ Section aProp.
         rewrite lookup_fmap lookup_singleton_ne // option_equivI.
         by destruct (_ !! l'). }
       iPureIntro. apply map_eq=> l'. destruct (decide (Chan l = l')) as [<-|].
-      + by rewrite lookup_singleton.
+      + by rewrite lookup_singleton_eq.
       + rewrite lookup_singleton_ne //. auto.
     - iIntros "->". rewrite /excl_outEdges !map_fmap_singleton.
       by iApply (f_equivI (singletonM (Chan l))).
@@ -370,13 +370,13 @@ Section aProp.
     - iIntros "(%Σ1 & %Σ2 & -> & %Hdisj & Hp & HQ)".
       iDestruct (aProp_at_own_ref with "Hp") as %->.
       rewrite map_disjoint_singleton_l in Hdisj.
-      rewrite lookup_union_l // lookup_singleton.
-      rewrite delete_union delete_singleton left_id_L delete_notin //. eauto.
+      rewrite lookup_union_l // lookup_singleton_eq.
+      rewrite delete_union delete_singleton_eq left_id_L delete_id //. eauto.
     - iIntros "[%HΣl HQ]".
       iExists {[ Chan l := inl v ]}, (delete (Chan l) Σ). iSplit.
       { iPureIntro. by rewrite -insert_empty union_insert_delete // left_id_L. }
       iSplit.
-      { iPureIntro. apply map_disjoint_singleton_l. by rewrite lookup_delete. }
+      { iPureIntro. apply map_disjoint_singleton_l. by rewrite lookup_delete_eq. }
       iSplit; [|done]. iApply aProp_at_own_ref; eauto.
   Qed.
   Global Instance own_ref_timeless l v : Timeless (l ↦ v).
@@ -529,8 +529,8 @@ Proof.
   rewrite aProp_at_own_chan.
   iDestruct "Hp" as (p1') "[%HΣ2 H2]".
   apply (f_equal (λ x, x !! Chan l)) in HΣ2.
-  rewrite lookup_delete in HΣ2.
-  rewrite lookup_singleton in HΣ2.
+  rewrite lookup_delete_eq in HΣ2.
+  rewrite lookup_singleton_eq in HΣ2.
   discriminate.
 Qed.
 
@@ -543,8 +543,8 @@ Proof.
   rewrite aProp_at_own_ref.
   iDestruct "H1" as %HΣ2.
   apply (f_equal (λ x, x !! Chan l)) in HΣ2.
-  rewrite lookup_delete in HΣ2.
-  rewrite lookup_singleton in HΣ2.
+  rewrite lookup_delete_eq in HΣ2.
+  rewrite lookup_singleton_eq in HΣ2.
   discriminate.
 Qed.
 
@@ -557,7 +557,7 @@ Proof.
   rewrite aProp_at_own_ref.
   iDestruct "Hp" as %HΣ2.
   apply (f_equal (λ x, x !! Chan l)) in HΣ2.
-  rewrite lookup_delete in HΣ2.
-  rewrite lookup_singleton in HΣ2.
+  rewrite lookup_delete_eq in HΣ2.
+  rewrite lookup_singleton_eq in HΣ2.
   discriminate.
 Qed.

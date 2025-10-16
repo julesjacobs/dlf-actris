@@ -35,7 +35,7 @@ Proof. done. Qed.
 
 Lemma lookup_take_spec {A} (xs : list A) k n :
   take n xs !! k = if decide (k < n) then xs !! k else None.
-Proof. case_decide; eauto using lookup_take, lookup_take_ge with lia. Qed.
+Proof. case_decide; eauto using lookup_take_lt, lookup_take_ge with lia. Qed.
 
 Lemma lookup_list_singleton_spec {A} k (x : A) :
   [x] !! k = if decide (k = 0) then Some x else None.
@@ -47,7 +47,7 @@ Proof. by induction l1. Qed.
 
 Lemma lookup_delete_lr {A} (xs : list A) (i j : nat) :
   delete i xs !! j = if decide (j < i) then xs !! j else xs !! (S j).
-Proof. case_decide; eauto using lookup_delete_lt, lookup_delete_ge with lia. Qed.
+Proof. case_decide; eauto using list_lookup_delete_lt, list_lookup_delete_ge with lia. Qed.
 
 Lemma split_first {A} (xs : list A) a :
   xs !! 0 = Some a → xs = [a] ++ drop 1 xs.
@@ -74,7 +74,7 @@ Qed.
 Lemma last_take {A} i (xs : list A) :
   i < length xs → last (take (S i) xs) = xs !! i.
 Proof.
-  intros. rewrite last_lookup lookup_take ?length_take; last lia.
+  intros. rewrite last_lookup lookup_take_lt ?length_take; last lia.
   f_equal; lia.
 Qed.
 
@@ -96,7 +96,7 @@ Qed.
 
 Lemma lookup_insert_spec `{FinMap K M} {A} (m : M A) i j x :
   <[i:=x]> m !! j = if (decide (i = j)) then Some x else m !! j.
-Proof. case_decide; subst; eauto using lookup_insert, lookup_insert_ne. Qed.
+Proof. case_decide; subst; eauto using lookup_insert_eq, lookup_insert_ne. Qed.
 
 Lemma lookup_delete_spec `{FinMap K M} {A} (m : M A) i j :
   delete i m !! j = if (decide (i = j)) then None else m !! j.

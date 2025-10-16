@@ -27,7 +27,7 @@ Section cgraph.
     g ∪ set_map prod_swap g.
 
   Definition dedges (g : cgraph V L) : gset (V * V) :=
-    dom (gmap_uncurry g).
+    dom (map_uncurry (M12:=gmap _) g).
   Definition to_uforest (g : cgraph V L) : uforest V :=
     make_undirected $ dedges g.
 
@@ -62,8 +62,8 @@ Section cgraph.
     Proof.
       intro.
       pose proof (in_labels_insert (delete i g) i y v) as HH.
-      rewrite insert_delete in HH; last done.
-      rewrite HH; last by apply lookup_delete.
+      rewrite insert_delete_id in HH; last done.
+      rewrite HH; last by apply lookup_delete_eq.
       done.
     Qed.
 
@@ -74,8 +74,8 @@ Section cgraph.
     Proof.
       intro.
       assert (<[i:=x]> g = <[i:=x]> $ delete i g) as ->.
-      { by rewrite insert_delete_insert. }
-      rewrite in_labels_insert; last by apply lookup_delete.
+      { by rewrite insert_delete_eq. }
+      rewrite in_labels_insert; last by apply lookup_delete_eq.
       rewrite comm. rewrite -assoc.
       rewrite (comm (⊎) (in_labels _ _)).
       rewrite in_labels_delete; eauto.
@@ -183,9 +183,9 @@ Section cgraph.
     Qed.
 
     Lemma gmap_uncurry_out_edges g x y :
-      gmap_uncurry g !! (x, y) = out_edges g x !! y.
+      map_uncurry (M12:=gmap _) g !! (x, y) = out_edges g x !! y.
     Proof.
-      rewrite lookup_gmap_uncurry.
+      rewrite lookup_map_uncurry.
       unfold out_edges.
       destruct (g !! x); simpl; eauto.
     Qed.
@@ -393,7 +393,7 @@ Section cgraph.
       { unfold out_edges in H1. rewrite E lookup_empty in H1. simplify_eq. }
       pose proof (in_labels_update g ν1 (delete ν2 (out_edges g ν1)) g0 ν2 E) as H0.
       destruct (g0 !! ν2) eqn:F; simpl in *.
-      - rewrite lookup_delete in H0.
+      - rewrite lookup_delete_eq in H0.
         simpl in *.
         rewrite ->H2 in H0.
         unfold out_edges in H1.
@@ -533,7 +533,7 @@ Section cgraph.
       intros ??.
       rewrite out_edges_delete_edge.
       case_decide; subst; eauto.
-      rewrite delete_notin; eauto.
+      rewrite delete_id; eauto.
       destruct (out_edges g v !! ν2) eqn:E; eauto.
       exfalso. eapply H0. unfold edge. rewrite E. eauto.
     Qed.
@@ -666,7 +666,7 @@ Section cgraph.
       rewrite out_edges_delete_edge.
       repeat case_decide; simplify_eq; eauto.
       apply map_eq. intros v.
-      rewrite insert_delete_insert //.
+      rewrite insert_delete_eq //.
     Qed.
 
     Lemma update_in_labels_neq g v ν1 ν2 l' :
@@ -677,7 +677,7 @@ Section cgraph.
       rewrite /update_edge in_labels_insert_edge.
       - case_decide; simplify_eq. rewrite in_labels_delete_edge_neq; eauto.
       - unfold edge. rewrite out_edges_delete_edge.
-        case_decide; simplify_eq. rewrite lookup_delete. done.
+        case_decide; simplify_eq. rewrite lookup_delete_eq. done.
     Qed.
 
     Lemma update_edge_wf g ν1 ν2 l' :
@@ -847,7 +847,7 @@ Section cgraph.
           + eapply insert_edge_wf; eauto.
           + left. unfold edge.
             rewrite out_edges_insert_edge.
-            case_decide; simplify_eq. rewrite lookup_insert. eauto.
+            case_decide; simplify_eq. rewrite lookup_insert_eq. eauto.
         - unfold edge.
           erewrite move_edge_out_edges; last first.
           + rewrite out_edges_insert_edge.
@@ -876,11 +876,11 @@ Section cgraph.
       repeat case_decide; simplify_eq; eauto.
       - assert (ν2 ≠ v3). { intros ->. eapply no_self_edge; eauto using some_edge_L. }
         rewrite delete_insert_ne; eauto.
-        rewrite delete_insert; eauto.
+        rewrite delete_insert_id; eauto.
         destruct (out_edges g ν2 !! ν2) eqn:F; eauto.
         exfalso. eapply no_self_edge; eauto using some_edge_L.
-      - rewrite delete_commute.
-        rewrite delete_insert; eauto.
+      - rewrite delete_delete.
+        rewrite delete_insert_id; eauto.
         destruct (out_edges g v !! ν2) eqn:F; eauto.
         exfalso. apply H1. apply rtc_once.
         left. eapply some_edge_L; eauto.
@@ -915,27 +915,27 @@ Section cgraph.
           left.
           unfold edge.
           rewrite Hout.
-          rewrite lookup_union lookup_insert.
+          rewrite lookup_union lookup_insert_eq.
           destruct (e1 !! i); eauto.
         + apply move_edge_uconn; eauto.
         + solve_map_disjoint.
         + destruct (out_edges g ν1 !! i) eqn:E.
-          2: { rewrite Hout in E. rewrite lookup_union lookup_insert in E.
+          2: { rewrite Hout in E. rewrite lookup_union lookup_insert_eq in E.
             destruct (e1 !! i); simpl in *; simplify_eq.  }
           erewrite move_edge_out_edges; eauto.
           repeat case_decide; simplify_eq.
           -- exfalso. apply Hnuconn. reflexivity.
           -- rewrite Hout. rewrite delete_union.
-             rewrite delete_insert; eauto.
-             rewrite delete_notin; eauto.
+             rewrite delete_insert_id; eauto.
+             rewrite delete_id; eauto.
              solve_map_disjoint.
         + destruct H1 as (H1 & H2 & H3 & H4).
           exists x0. split_and!; eauto.
           -- intros v. rewrite H3.
              assert (out_edges g ν1 !! i = Some x).
-             { rewrite Hout. rewrite lookup_union lookup_insert.
+             { rewrite Hout. rewrite lookup_union lookup_insert_eq.
                 destruct (e1 !! i) eqn:E; simpl; eauto.
-                specialize (Hdisj i). rewrite E in Hdisj. rewrite lookup_insert in Hdisj.
+                specialize (Hdisj i). rewrite E in Hdisj. rewrite lookup_insert_eq in Hdisj.
                 simpl in *. done. }
              repeat case_decide; simplify_eq; eauto.
              ++ erewrite move_edge_out_edges; eauto.
@@ -1154,7 +1154,7 @@ Section cgraph_si.
     destruct (g !! ν1) as [Σ|] eqn:Hgν1; last done.
     pose proof (in_labels_update g ν1 (delete ν2 (out_edges g ν1)) Σ ν2 Hgν1) as HΣ.
     destruct (Σ !! ν2) eqn:F; simplify_eq/=.
-    rewrite lookup_delete /= left_id in HΣ. by rewrite -HΣ multiset_disj_union_injI.
+    rewrite lookup_delete_eq /= left_id in HΣ. by rewrite -HΣ multiset_disj_union_injI.
   Qed.
 
   Lemma exchange_alloc g ν1 ν2 Σ1 Σ2 l :

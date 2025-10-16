@@ -106,7 +106,7 @@ Section ctx.
 
   Lemma elem_of_ctx_filter_ne Γ x y B :
     CtxItem y B ∈ ctx_filter_ne x Γ → x ≠ y.
-  Proof. intros ?%elem_of_list_filter. naive_solver. Qed.
+  Proof. intros ?%list_elem_of_filter. naive_solver. Qed.
 
   Lemma ctx_filter_ne_cons Γ x A :
     ctx_filter_ne x (CtxItem x A :: Γ) = ctx_filter_ne x Γ.
@@ -142,7 +142,7 @@ Section ctx.
     rewrite /lookup /ctx_lookup=> ?.
     destruct (ctx_filter_eq x Γ) as [|[x' ?] [|??]] eqn:Hx; simplify_eq/=.
     assert (CtxItem x' A ∈ ctx_filter_eq x Γ)
-      as [? _]%elem_of_list_filter; simplify_eq/=.
+      as [? _]%list_elem_of_filter; simplify_eq/=.
     { rewrite Hx. set_solver. }
     by rewrite {1}(ctx_filter_eq_perm Γ x) Hx.
   Qed.
@@ -210,7 +210,7 @@ Section ctx.
     ctx_ltyped (binder_insert x v vs) (ctx_cons x A Γ).
   Proof.
     iIntros "HA HΓ". rewrite /ctx_cons. iSplitL "HA".
-    - iExists v. iFrame "HA". destruct x; by rewrite /= ?lookup_insert.
+    - iExists v. iFrame "HA". destruct x; by rewrite /= ?lookup_insert_eq.
     - by iApply ctx_ltyped_anonymize.
   Qed.
 
@@ -220,9 +220,9 @@ Section ctx.
     ctx_ltyped (binder_insert x v vs) (ctx_overwrite x A Γ).
   Proof.
     iIntros "HA HΓ". iSplitL "HA".
-    { iExists v. iFrame "HA". destruct x; by rewrite /= ?lookup_insert. }
+    { iExists v. iFrame "HA". destruct x; by rewrite /= ?lookup_insert_eq. }
     iApply (big_sepL_impl with "HΓ").
-    iIntros "!>" (k [y B] ?%elem_of_list_lookup_2%elem_of_ctx_filter_ne).
+    iIntros "!>" (k [y B] ?%list_elem_of_lookup_2%elem_of_ctx_filter_ne).
     iIntros "(%w & %Hw & HB)"; iExists w; iFrame "HB".
     destruct x, y; rewrite /= ?lookup_insert_ne; auto with congruence.
   Qed.
