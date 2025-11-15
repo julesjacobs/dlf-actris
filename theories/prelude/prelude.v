@@ -1,5 +1,5 @@
 From stdpp Require Export ssreflect.
-From iris.algebra Require Import list gmap.
+From iris.algebra Require Import list.
 From iris.bi Require Import bi.
 From iris.prelude Require Export options.
 
@@ -33,21 +33,9 @@ Lemma sc_or {A} (R : relation A) x y :
   sc R x y ↔ R x y ∨ R y x.
 Proof. done. Qed.
 
-Lemma lookup_take_spec {A} (xs : list A) k n :
-  take n xs !! k = if decide (k < n) then xs !! k else None.
-Proof. case_decide; eauto using lookup_take_lt, lookup_take_ge with lia. Qed.
-
-Lemma lookup_list_singleton_spec {A} k (x : A) :
-  [x] !! k = if decide (k = 0) then Some x else None.
-Proof. by destruct k. Qed.
-
 Lemma lookup_app_add {A} (l1 l2 : list A) (i : nat) :
   (l1 ++ l2) !! (length l1 + i) = l2 !! i.
 Proof. by induction l1. Qed.
-
-Lemma lookup_delete_lr {A} (xs : list A) (i j : nat) :
-  delete i xs !! j = if decide (j < i) then xs !! j else xs !! (S j).
-Proof. case_decide; eauto using list_lookup_delete_lt, list_lookup_delete_ge with lia. Qed.
 
 Lemma split_first {A} (xs : list A) a :
   xs !! 0 = Some a → xs = [a] ++ drop 1 xs.
@@ -85,22 +73,6 @@ Proof. intros. rewrite last_take; eauto using lookup_lt_Some. Qed.
 Lemma last_drop {A} (xs : list A) i :
   i < length xs → last (drop i xs) = last xs.
 Proof. intros. rewrite !last_lookup lookup_drop length_drop. f_equal; lia. Qed.
-
-Lemma lookup_update {A} i j (xs : list A) x :
-  <[i:=x]> xs !! j = if decide (i = j ∧ j < length xs) then Some x else xs !! j.
-Proof.
-  revert i j. induction xs as [|x' xs IH]; intros [|i] [|j];
-    simpl; [repeat case_decide; auto with lia..|].
-  rewrite IH. repeat case_decide; auto with lia.
-Qed.
-
-Lemma lookup_insert_spec `{FinMap K M} {A} (m : M A) i j x :
-  <[i:=x]> m !! j = if (decide (i = j)) then Some x else m !! j.
-Proof. case_decide; subst; eauto using lookup_insert_eq, lookup_insert_ne. Qed.
-
-Lemma lookup_delete_spec `{FinMap K M} {A} (m : M A) i j :
-  delete i m !! j = if (decide (i = j)) then None else m !! j.
-Proof. case_decide; [apply lookup_delete_None|apply lookup_delete_ne]; auto. Qed.
 
 (** UPSTREAM to Iris *)
 Section quotient.

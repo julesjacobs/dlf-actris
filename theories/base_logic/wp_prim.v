@@ -367,7 +367,7 @@ Proof.
     + by iRewrite "HΣ2".
   - iRewrite ("Hout" $! (Thread i') with "[%]"); first naive_solver.
     by iRewrite ("Hin_ne" $! (Thread i') with "[//]").
-  - rewrite lookup_insert_spec. case_decide; simplify_eq/=.
+  - rewrite lookup_insert. case_decide; simplify_eq/=.
     + rewrite aProp_at_exist. iExists Ψ.
       rewrite aProp_at_sep_affinely_l !aProp_at_internal_eq. iSplit.
       * iApply "Hin". iRewrite "Hchan".
@@ -487,7 +487,7 @@ Proof.
     + iRewrite "Hout1". iRewrite "HΣ'". done.
   - iRewrite ("HH1" $! (Thread i') with "[%]"); first naive_solver.
     by iRewrite ("HH3" $! (Thread i') with "[//]").
-  - rewrite /= lookup_delete_spec. case_decide; simplify_eq/=.
+  - rewrite /= lookup_delete. case_decide; simplify_eq/=.
     + rewrite !aProp_at_affinely aProp_at_pure.
       iSplit; eauto.
       rewrite -!multiset_empty_equiv_eq.
@@ -623,7 +623,7 @@ Proof.
         iApply discrete_eq.
         iRewrite ("Hin2" with "[//]").
         rewrite Hinv2 //.
-  - rewrite lookup_insert_spec. case_decide; subst; simpl.
+  - rewrite lookup_insert. case_decide; subst; simpl.
     + rewrite aProp_at_exist. destruct p. iExists prot_pred.
       rewrite aProp_at_affinely.
       iSplit; eauto.
@@ -683,7 +683,7 @@ Proof.
       iRewrite ("Hout" $! (Thread i') with "[%]"); first naive_solver.
       iRewrite ("Hin" $! (Thread i') with "[//]"). done.
     - simpl.
-      rewrite lookup_insert_spec. case_decide; subst; simpl.
+      rewrite lookup_insert. case_decide; subst; simpl.
       + rewrite aProp_at_affinely aProp_at_internal_eq.
         iRewrite ("Hout" $! (Chan l') with "[%]"); first naive_solver.
         rewrite Houtchan. iSplit; first done.
@@ -871,7 +871,7 @@ Proof.
       + iRewrite ("Hout3" with "[]"). { iPureIntro. naive_solver. }
         iRewrite ("Hin2" with "[]"). { iPureIntro. naive_solver. }
         done.
-      + rewrite lookup_insert_spec. case_decide; subst; simpl; try done.
+      + rewrite lookup_insert. case_decide; subst; simpl; try done.
         * rewrite aProp_at_affinely aProp_at_internal_eq.
           iSplit; first done.
           iDestruct ("Hin1" $! ∅ with "[]") as "Hin1'".
@@ -982,7 +982,7 @@ Proof.
     + iRewrite ("Hout" with "[]"). { iPureIntro. naive_solver. }
       iRewrite ("Hin" with "[]"). { iPureIntro. naive_solver. }
       done.
-    + rewrite lookup_delete_spec. case_decide; subst; simpl; try done.
+    + rewrite lookup_delete. case_decide; subst; simpl; try done.
       * rewrite aProp_at_affinely aProp_at_pure.
         iSplit.
         { iRewrite ("Hout" with "[//]"). by rewrite Houtchan. }

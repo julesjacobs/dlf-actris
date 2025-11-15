@@ -89,7 +89,7 @@ Section cgraph.
       induction g using map_ind; intros.
       - rewrite lookup_empty in H0. inversion H0.
       - unfold out_edges in H1.
-        rewrite lookup_insert_spec in H1.
+        rewrite lookup_insert in H1.
         case_decide; simplify_eq.
         + exists (in_labels m ν2).
           rewrite in_labels_insert; eauto.
@@ -121,7 +121,7 @@ Section cgraph.
         if decide (ν1 = ν2) then e
         else out_edges g ν2.
     Proof.
-      rewrite /out_edges. rewrite lookup_insert_spec.
+      rewrite /out_edges. rewrite lookup_insert.
       repeat case_decide; simplify_eq; done.
     Qed.
 
@@ -269,7 +269,7 @@ Section cgraph.
       destruct (g !! ν1) eqn:E.
       - assert (g !! ν1 = Some g0) as HH; eauto.
         pose proof (in_labels_update g ν1 (<[ν2:=l]> (out_edges g ν1)) g0 v3 HH) as H0.
-        rewrite lookup_insert_spec in H0.
+        rewrite lookup_insert in H0.
         destruct (g0 !! v3) eqn:F; simpl in *.
         + case_decide; simplify_eq/=.
           * exfalso. apply Hnotedge.
@@ -282,7 +282,7 @@ Section cgraph.
           rewrite H0. case_decide; simpl; eauto. unfold out_edges.
           rewrite HH. rewrite F. simpl. rewrite left_id. done.
       - rewrite in_labels_insert; eauto.
-        rewrite lookup_insert_spec.
+        rewrite lookup_insert.
         case_decide; simplify_eq; try done.
         unfold out_edges.
         rewrite E. rewrite lookup_empty.
@@ -295,7 +295,7 @@ Section cgraph.
       unfold edge.
       rewrite out_edges_insert_edge.
       case_decide; subst.
-      - rewrite lookup_insert_spec. case_decide; subst.
+      - rewrite lookup_insert. case_decide; subst.
         + naive_solver.
         + naive_solver.
       - naive_solver.
@@ -412,7 +412,7 @@ Section cgraph.
       - pose proof (in_labels_update g ν1 (delete ν2 (out_edges g ν1)) g0 v3 E) as H0.
         destruct (g0 !! v3) eqn:F.
         + simpl in *.
-          rewrite lookup_delete_spec in H0.
+          rewrite lookup_delete in H0.
           unfold out_edges in H0 at 2.
           rewrite E in H0.
           rewrite F in H0.
@@ -422,12 +422,12 @@ Section cgraph.
         + simpl in *. rewrite ->left_id in H0.
           2: { intro. simpl. rewrite left_id. done. }
           rewrite H0.
-          rewrite lookup_delete_spec.
+          rewrite lookup_delete.
           unfold out_edges. rewrite E.
           rewrite F. case_decide; simplify_eq; simpl.
           rewrite left_id. done.
       - rewrite in_labels_insert; eauto.
-        rewrite lookup_delete_spec.
+        rewrite lookup_delete.
         unfold out_edges.
         rewrite E. rewrite lookup_empty.
         case_decide; simpl; rewrite left_id //.
@@ -442,7 +442,7 @@ Section cgraph.
       unfold edge.
       rewrite out_edges_delete_edge.
       case_decide; simplify_eq; eauto.
-      rewrite lookup_delete_spec.
+      rewrite lookup_delete.
       case_decide; simplify_eq; eauto.
       naive_solver.
     Qed.
@@ -466,7 +466,7 @@ Section cgraph.
         move: H0.
         unfold edge. rewrite !out_edges_delete_edge.
         repeat case_decide; subst.
-        + rewrite lookup_delete_spec.
+        + rewrite lookup_delete.
           case_decide; subst; first by intros []. naive_solver.
         +  naive_solver.
       - intros []. eapply edge_delete_edge; eauto.
@@ -714,7 +714,7 @@ Section cgraph.
       rewrite out_edges_insert_edge.
       rewrite out_edges_delete_edge.
       repeat case_decide; simplify_eq; eauto; apply map_eq; intro;
-      rewrite ?lookup_union ?lookup_insert_spec ?lookup_delete_spec ?lookup_empty;
+      rewrite ?lookup_union ?lookup_insert ?lookup_delete ?lookup_empty;
       repeat case_decide; simplify_eq; eauto.
     Qed.
 
@@ -799,8 +799,8 @@ Section cgraph.
       edge (delete_edge g w1 w2) ν1 ν2 → edge g ν1 ν2.
     Proof.
       rewrite /delete_edge /edge /out_edges.
-      destruct (g !! w1) eqn:F; simpl; rewrite lookup_insert_spec; repeat case_decide;
-      rewrite ?lookup_delete_spec; repeat case_decide; simplify_eq;
+      destruct (g !! w1) eqn:F; simpl; rewrite lookup_insert; repeat case_decide;
+      rewrite ?lookup_delete; repeat case_decide; simplify_eq;
       try destruct (g !! ν1) eqn:E; simpl; rewrite ?lookup_empty; eauto; try intros [];
       simplify_eq. rewrite H0. eauto.
     Qed.
@@ -852,13 +852,13 @@ Section cgraph.
           erewrite move_edge_out_edges; last first.
           + rewrite out_edges_insert_edge.
             case_decide; simplify_eq.
-            rewrite lookup_insert_spec.
+            rewrite lookup_insert.
             case_decide; simplify_eq; eauto.
           + rewrite !out_edges_insert_edge.
             repeat case_decide; simplify_eq.
-            * rewrite !lookup_insert_spec.
+            * rewrite !lookup_insert.
               case_decide; simplify_eq. eauto.
-            * rewrite lookup_delete_spec lookup_insert_spec.
+            * rewrite lookup_delete lookup_insert.
               case_decide; simplify_eq.
               -- exfalso. apply H1.
                  eapply rtc_once. left. eauto using some_edge_L.
@@ -871,7 +871,7 @@ Section cgraph.
       erewrite move_edge_out_edges; last done.
       erewrite move_edge_out_edges; last first.
       { rewrite out_edges_insert_edge. case_decide; eauto.
-        rewrite lookup_insert_spec. case_decide; simplify_eq; eauto. }
+        rewrite lookup_insert. case_decide; simplify_eq; eauto. }
       rewrite !out_edges_insert_edge.
       repeat case_decide; simplify_eq; eauto.
       - assert (ν2 ≠ v3). { intros ->. eapply no_self_edge; eauto using some_edge_L. }
@@ -941,7 +941,7 @@ Section cgraph.
              ++ erewrite move_edge_out_edges; eauto.
                 case_decide; simplify_eq.
                 apply map_eq; intro.
-                rewrite !lookup_union !lookup_insert_spec;
+                rewrite !lookup_union !lookup_insert;
                 repeat case_decide; simplify_eq; eauto.
                 rewrite H0. simpl.
                 destruct (out_edges g ν2 !! i0) eqn:E; eauto; simpl.
