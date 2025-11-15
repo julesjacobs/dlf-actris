@@ -512,7 +512,7 @@ Section instances.
   Lemma linPred_sbi_prop_ext_mixin :
     SbiPropExtMixin linPredI linPred_si_emp_valid.
   Proof.
-    apply sbi_prop_ext_mixin_make=> P Q.
+    apply sbi_prop_ext_mixin=> P Q.
     rewrite /bi_wand_iff /si_emp_valid
       ?(linPred_unseal_bi, linPred_defs.linPred_si_emp_valid_unseal) /=.
     rewrite linPred_equivI /=. iIntros "#[H1 H2] %x #?".
