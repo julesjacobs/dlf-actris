@@ -9,8 +9,6 @@ Notation "x ≡≡ y" := (<affine> (x ≡ y))%I (at level 70) : bi_scope.
 Reserved Notation "c ↣ p" (at level 20, format "c  ↣  p").
 
 (** UPSTREAM to std++ *)
-Definition prod_swap {A B} : A * B → B * A := λ '(x,y), (y,x).
-
 Lemma elem_of_set_map_prod_swap `{Countable A} (e : gset (A * A)) (x y : A) :
   (x, y) ∈@{gset _} set_map prod_swap e ↔ (y, x) ∈ e.
 Proof.
@@ -18,11 +16,6 @@ Proof.
   - intros [[??]]; naive_solver.
   - intros. by exists (y,x).
 Qed.
-
-Lemma not_rtsc {A} {R : relation A} x y :
-  (∀ y', ¬R x y' ∧ ¬R y' x) →
-  rtsc R x y → x = y.
-Proof. induction 2 as [|??? []]; naive_solver. Qed.
 
 Lemma rtc_iff {A} (R1 R2 : relation A) x y :
   (∀ x y, R1 x y ↔ R2 x y) →
@@ -38,7 +31,7 @@ Lemma lookup_app_add {A} (l1 l2 : list A) (i : nat) :
 Proof. by induction l1. Qed.
 
 Lemma split_first {A} (xs : list A) a :
-  xs !! 0 = Some a → xs = [a] ++ drop 1 xs.
+  xs !! 0 = Some a → xs = a :: drop 1 xs.
 Proof. destruct xs as [|? []]; naive_solver. Qed.
 
 Lemma split_last {A} (xs : list A) a :

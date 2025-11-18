@@ -136,11 +136,10 @@ Section cgraph.
       in_labels g v = ∅ →
       uconn g v' v → v = v'.
     Proof.
-      intros Hout Hin Hconn.
-      eapply not_rtsc; last done.
-      intros y. unfold edge. split; intros [].
-      - rewrite Hout in H0. rewrite lookup_empty in H0. simplify_eq.
-      - eapply no_in_labels_no_out_edge in Hin. erewrite H0 in Hin. simplify_eq.
+      intros Hout Hin Hconn. eapply rtsc_nf; first done.
+      unfold edge. intros [y []].
+      - by rewrite Hout lookup_empty in H0.
+      - eapply no_in_labels_no_out_edge in Hin. by erewrite Hin in H0.
     Qed.
 
     Lemma some_edge_L (g : cgraph V L) (ν1 ν2 : V) (l : L) :
